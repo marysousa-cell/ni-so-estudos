@@ -1,154 +1,77 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f6f7fb">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Estudaê — Seu espaço de estudos</title>
   <style>
-    :root {
-      --bg: #f6f7fb;
-      --surface: #ffffff;
-      --text: #20243a;
-      --muted: #737991;
-      --primary: #6258e8;
-      --primary-light: #eeedff;
-      --border: #e8eaf2;
-      --shadow: 0 12px 35px rgba(37, 42, 75, .07);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; color: var(--text); background: var(--bg); }
-    button, input, select { font: inherit; }
-    button { cursor: pointer; }
-    .layout { min-height: 100vh; display: grid; grid-template-columns: 248px 1fr; }
-    .sidebar {
-      background: var(--surface); border-right: 1px solid var(--border); padding: 28px 18px;
-      display: flex; flex-direction: column; gap: 30px;
-    }
-    .brand { display: flex; align-items: center; gap: 10px; padding: 0 10px; font-size: 21px; font-weight: 800; }
-    .brand-icon { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 12px; color: white; background: var(--primary); }
-    .nav-label { padding: 0 12px; color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-    .nav { display: grid; gap: 5px; }
-    .nav a { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 11px; color: #60667e; text-decoration: none; font-size: 14px; font-weight: 600; }
-    .nav a:hover, .nav a.active { background: var(--primary-light); color: var(--primary); }
-    .sidebar-note { margin-top: auto; padding: 17px; border-radius: 16px; background: #f2f0ff; color: #514bb1; font-size: 13px; line-height: 1.5; }
-    main { width: 100%; max-width: 1440px; margin: auto; padding: 28px 40px 60px; }
-    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 30px; }
-    .search { width: min(440px, 100%); position: relative; }
-    .search input { width: 100%; padding: 13px 15px 13px 42px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); outline: none; }
-    .search span { position: absolute; left: 14px; top: 11px; }
-    .profile { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; }
-    .avatar { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: #ffe4c7; }
-    .hero { display: flex; justify-content: space-between; align-items: center; padding: 34px; border-radius: 22px; color: #fff; background: linear-gradient(115deg, #6558e9, #8978f1); box-shadow: var(--shadow); }
-    .hero h1 { margin: 0 0 10px; font-size: clamp(25px, 4vw, 36px); }
-    .hero p { max-width: 550px; margin: 0 0 22px; color: #eeecff; line-height: 1.6; }
-    .hero-art { font-size: clamp(62px, 9vw, 105px); padding: 0 18px; }
-    .button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px; border: 0; border-radius: 10px; color: white; background: var(--primary); font-weight: 700; text-decoration: none; }
-    .hero .button { color: var(--primary); background: white; }
-    .section { margin-top: 36px; scroll-margin-top: 20px; }
-    .section-heading { display: flex; justify-content: space-between; align-items: end; margin-bottom: 17px; }
-    .section-heading h2 { margin: 0; font-size: 21px; }
-    .section-heading p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
-    .subject-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-    .subject-card, .panel, .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 4px 15px rgba(37, 42, 75, .025); }
-    .subject-card { padding: 18px; text-align: left; transition: transform .18s, box-shadow .18s; }
-    .subject-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
-    .subject-emoji { display: grid; place-items: center; width: 43px; height: 43px; margin-bottom: 13px; border-radius: 13px; background: var(--tile, #eeedff); font-size: 22px; }
-    .subject-card strong { display: block; margin-bottom: 5px; }
-    .subject-card small { color: var(--muted); }
-    .two-columns { display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px; }
-    .panel { padding: 22px; }
-    .panel h3 { margin: 0 0 7px; }
-    .panel > p { margin: 0 0 18px; color: var(--muted); font-size: 13px; line-height: 1.5; }
-    .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
-    .field { display: grid; gap: 7px; flex: 1; margin-bottom: 12px; }
-    .field label { font-size: 12px; color: #555b72; font-weight: 700; }
-    input, select { width: 100%; min-width: 0; padding: 11px 12px; border: 1px solid var(--border); border-radius: 9px; color: var(--text); background: white; outline: none; }
-    .result { display: none; margin-top: 15px; padding: 14px; border-radius: 11px; background: #f4f3ff; color: #34305f; line-height: 1.6; font-size: 14px; white-space: pre-line; }
-    .result.show { display: block; }
-    .quiz-options { display: grid; gap: 8px; margin: 14px 0; }
-    .quiz-option { padding: 11px 12px; border: 1px solid var(--border); border-radius: 9px; text-align: left; color: var(--text); background: white; }
-    .quiz-option.correct { border-color: #69bd91; background: #effaf3; }
-    .quiz-option.wrong { border-color: #e58b8b; background: #fff2f2; }
-    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    .stat-card { padding: 18px; }
-    .stat-card span { color: var(--muted); font-size: 12px; }
-    .stat-card strong { display: block; margin-top: 8px; font-size: 24px; }
-    footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; text-align: center; }
-    @media (max-width: 1000px) { .subject-grid { grid-template-columns: repeat(3, 1fr); } .layout { grid-template-columns: 210px 1fr; } main { padding: 24px; } }
-    @media (max-width: 720px) {
-      .layout { display: block; } .sidebar { position: sticky; top: 0; z-index: 3; padding: 12px 14px; border-right: 0; border-bottom: 1px solid var(--border); gap: 10px; }
-      .sidebar > div:nth-child(2), .sidebar-note { display: none; } .nav { display: flex; overflow-x: auto; } .nav a { flex: 0 0 auto; padding: 9px 10px; }
-      main { padding: 18px 14px 40px; } .hero { padding: 24px; } .hero-art { display: none; } .subject-grid { grid-template-columns: repeat(2, 1fr); } .two-columns { grid-template-columns: 1fr; }
-    }
+    :root{--bg:#f6f7fb;--white:#fff;--text:#20243a;--muted:#737991;--purple:#6258e8;--pale:#eeedff;--line:#e8eaf2}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);background:var(--bg)}
+    button,input,select{font:inherit} button{cursor:pointer}
+    .app{min-height:100vh;display:grid;grid-template-columns:220px 1fr}.sidebar{background:var(--white);border-right:1px solid var(--line);padding:24px 16px}.brand{font-size:22px;font-weight:900;margin:0 8px 28px}.nav{display:grid;gap:6px}.nav button{border:0;border-radius:10px;background:none;color:#60667e;padding:12px;text-align:left;font-weight:700}.nav button:hover,.nav button.active{background:var(--pale);color:var(--purple)}
+    main{width:min(1200px,100%);margin:auto;padding:28px}.top{margin-bottom:22px}.top h1{font-size:28px;margin:0 0 6px}.top p{margin:0;color:var(--muted)}
+    .panel{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:22px;margin:16px 0}.panel h2,.panel h3{margin-top:0}.hidden{display:none}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .card{border:1px solid var(--line);border-radius:14px;background:var(--white);padding:16px}.card button{width:100%;border:0;border-radius:10px;padding:12px;background:var(--purple);color:white;font-weight:800}
+    label{display:block;font-size:13px;font-weight:800;margin:10px 0 6px}input,select{width:100%;border:1px solid var(--line);border-radius:9px;padding:11px;background:white;color:var(--text)}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{border:0;border-radius:9px;padding:11px 14px;color:white;background:var(--purple);font-weight:800}.btn.secondary{background:#eef0f7;color:var(--text)}
+    .result{margin-top:14px;padding:14px;border-radius:11px;background:#f4f3ff;line-height:1.6;white-space:pre-line}.option{display:block;width:100%;border:1px solid var(--line);border-radius:9px;background:white;padding:11px;margin:8px 0;text-align:left}.option.correct{background:#edf9f1;border-color:#69bd91}.option.wrong{background:#fff1f1;border-color:#df8585}.progress{height:8px;border-radius:99px;background:#e9eaf2;overflow:hidden}.progress div{height:100%;background:var(--purple);width:0}
+    @media(max-width:800px){.app{display:block}.sidebar{position:sticky;top:0;z-index:5;padding:10px}.brand{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;padding:9px}.grid,.cards{grid-template-columns:1fr}main{padding:16px}}
   </style>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="brand"><span class="brand-icon">✦</span><span>Estudaê</span></div>
-      <div><div class="nav-label">Menu</div><nav class="nav"><a class="active" href="#inicio">🏠 Início</a><a href="#materias">📚 Matérias</a><a href="#estudo">📝 Resumos</a><a href="#ferramentas">🧮 Calculadoras</a><a href="#questionario">✅ Questionário</a></nav></div>
-      <div class="sidebar-note">💡 <strong>Dica de estudo</strong><br>Faça pausas curtas entre os períodos de concentração.</div>
-    </aside>
-    <main>
-      <header class="topbar"><label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Pesquisar matéria ou assunto..."></label><div class="profile"><span class="avatar">😊</span><span>Olá, estudante!</span></div></header>
-      <section class="hero" id="inicio"><div><h1>Aprender fica mais leve por aqui ✨</h1><p>Organize seus estudos, revise conteúdos e pratique para chegar mais confiante na próxima prova.</p><a class="button" href="#materias">Explorar matérias →</a></div><div class="hero-art">📚</div></section>
-      <section class="section" id="materias">
-        <div class="section-heading"><div><h2>O que vamos estudar?</h2><p>Escolha uma matéria para começar.</p></div></div>
-        <div class="subject-grid">
-          <button class="subject-card" data-subject="Matemática" style="--tile:#eeedff"><span class="subject-emoji">➗</span><strong>Matemática</strong><small>Frações, equações e mais</small></button>
-          <button class="subject-card" data-subject="Inglês" style="--tile:#e5f4ff"><span class="subject-emoji">🔤</span><strong>Inglês</strong><small>Vocabulário e gramática</small></button>
-          <button class="subject-card" data-subject="Português" style="--tile:#fff0df"><span class="subject-emoji">📖</span><strong>Português</strong><small>Leitura e escrita</small></button>
-          <button class="subject-card" data-subject="História" style="--tile:#ffe9e8"><span class="subject-emoji">🏛️</span><strong>História</strong><small>Sociedades e acontecimentos</small></button>
-          <button class="subject-card" data-subject="Geografia" style="--tile:#e7f7ed"><span class="subject-emoji">🌍</span><strong>Geografia</strong><small>Lugares e paisagens</small></button>
-          <button class="subject-card" data-subject="Artes" style="--tile:#fff0f6"><span class="subject-emoji">🎨</span><strong>Artes</strong><small>Expressões e movimentos</small></button>
-          <button class="subject-card" data-subject="Ciências" style="--tile:#e5f8f6"><span class="subject-emoji">🔬</span><strong>Ciências</strong><small>Vida, natureza e matéria</small></button>
-          <button class="subject-card" data-subject="Física" style="--tile:#eaf0ff"><span class="subject-emoji">⚡</span><strong>Física</strong><small>Forças e energia</small></button>
-          <button class="subject-card" data-subject="Educação financeira" style="--tile:#fff5d9"><span class="subject-emoji">💰</span><strong>Educação financeira</strong><small>Orçamento e juros</small></button>
-        </div>
-      </section>
-      <section class="section two-columns" id="estudo">
-        <div class="panel"><h3>📝 Criar um resumo</h3><p>Informe a matéria e o tema para montar um roteiro inicial.</p><div class="field"><label for="summarySubject">Matéria</label><select id="summarySubject"><option>Matemática</option><option>Inglês</option><option>Português</option><option>História</option><option>Geografia</option><option>Artes</option><option>Ciências</option><option>Física</option><option>Educação financeira</option></select></div><div class="field"><label for="summaryTopic">Tema</label><input id="summaryTopic" placeholder="Ex.: frações, verbos, sistema solar..."></div><button class="button" id="summaryButton">Montar roteiro</button><div class="result" id="summaryResult"></div></div>
-        <div class="panel" id="questionario"><h3>✅ Pergunta rápida</h3><p>Teste seus conhecimentos.</p><div id="quizQuestion"></div><div class="quiz-options" id="quizOptions"></div><div class="result" id="quizResult"></div><button class="button" id="newQuestionButton">Nova pergunta</button></div>
-      </section>
-      <section class="section" id="ferramentas">
-        <div class="section-heading"><div><h2>Calculadoras de estudo</h2><p>Confira os cálculos e use os resultados como apoio.</p></div></div>
-        <div class="two-columns">
-          <div class="panel"><h3>➗ Calculadora de frações</h3><div class="form-row"><div class="field"><label>Numerador 1</label><input id="num1" type="number" value="1"></div><div class="field"><label>Denominador 1</label><input id="den1" type="number" value="2"></div></div><div class="form-row"><div class="field"><label>Operação</label><select id="fractionOp"><option value="+">Somar (+)</option><option value="-">Subtrair (−)</option><option value="*">Multiplicar (×)</option><option value="/">Dividir (÷)</option></select></div><div class="field"><label>Numerador 2</label><input id="num2" type="number" value="1"></div><div class="field"><label>Denominador 2</label><input id="den2" type="number" value="3"></div></div><button class="button" id="fractionButton">Calcular</button><div class="result" id="fractionResult"></div></div>
-          <div class="panel"><h3>√ Raiz quadrada</h3><div class="field"><label>Digite o número</label><input id="sqrtValue" type="number" min="0" placeholder="Ex.: 81"></div><button class="button" id="sqrtButton">Calcular raiz</button><div class="result" id="sqrtResult"></div><hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><h3>Equação ax + b = c</h3><div class="form-row"><div class="field"><label>a</label><input id="coefA" type="number" value="2"></div><div class="field"><label>b</label><input id="coefB" type="number" value="4"></div><div class="field"><label>c</label><input id="coefC" type="number" value="10"></div></div><button class="button" id="equationButton">Resolver</button><div class="result" id="equationResult"></div></div>
-          <div class="panel"><h3>🔠 Polinômios</h3><p>Exemplo: <strong>2x^2 + 3x - x^2 + 4</strong></p><div class="field"><label>Polinômio</label><input id="polynomialInput" placeholder="Ex.: 2x^2 + 3x - x^2 + 4"></div><button class="button" id="polynomialButton">Simplificar</button><div class="result" id="polynomialResult"></div></div>
-          <div class="panel"><h3>💰 Juros simples</h3><div class="form-row"><div class="field"><label>Capital (R$)</label><input id="capital" type="number" placeholder="1000"></div><div class="field"><label>Taxa mensal (%)</label><input id="rate" type="number" placeholder="2"></div><div class="field"><label>Meses</label><input id="months" type="number" placeholder="6"></div></div><button class="button" id="interestButton">Calcular</button><div class="result" id="interestResult"></div></div>
-        </div>
-      </section>
-      <section class="section"><div class="section-heading"><div><h2>Seu progresso</h2><p>Um passo de cada vez já é progresso.</p></div></div><div class="stats"><div class="stat-card"><span>Matérias disponíveis</span><strong>9</strong></div><div class="stat-card"><span>Questionários respondidos</span><strong id="quizCount">0</strong></div><div class="stat-card"><span>Acertos</span><strong id="correctCount">0</strong></div></div></section>
-      <footer>Estudaê • Ferramenta demonstrativa para apoiar seus estudos.</footer>
-    </main>
-  </div>
-  <script>
-    const $ = id => document.getElementById(id);
-    function show(id, text) { const el=$(id); el.textContent=text; el.classList.add('show'); }
-    function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b)[a,b]=[b,a%b];return a||1}
-    $("searchInput").addEventListener("input", e=>{const q=e.target.value.toLowerCase();document.querySelectorAll(".subject-card").forEach(c=>c.style.display=c.textContent.toLowerCase().includes(q)?"":"none")});
-    document.querySelectorAll(".subject-card").forEach(c=>c.addEventListener("click",()=>{$("summarySubject").value=c.dataset.subject;$("summaryTopic").focus();$("estudo").scrollIntoView({behavior:"smooth"})}));
-    $("summaryButton").addEventListener("click",()=>{const topic=$("summaryTopic").value.trim(), subject=$("summarySubject").value;if(!topic){show("summaryResult","Digite um tema para montar seu roteiro.");return}show("summaryResult",`Roteiro de revisão — ${subject}: ${topic}\n\n1. Escreva o que você já sabe.\n2. Liste os conceitos principais.\n3. Procure um exemplo prático.\n4. Explique o assunto com suas palavras.\n5. Identifique o que precisa revisar novamente.`)});
-    const questions=[
-      {subject:"Matemática",question:"Qual fração representa a metade?",options:["1/2","1/3","2/3"],answer:0,explanation:"1/2 representa uma de duas partes iguais."},
-      {subject:"Ciências",question:"Qual astro está no centro do Sistema Solar?",options:["A Lua","O Sol","Marte"],answer:1,explanation:"O Sol é a estrela no centro do Sistema Solar."},
-      {subject:"Inglês",question:"O que significa “book”?",options:["Caderno","Livro","Caneta"],answer:1,explanation:"“Book” significa “livro”."},
-      {subject:"Geografia",question:"Em qual continente fica o Brasil?",options:["América do Sul","Europa","Ásia"],answer:0,explanation:"O Brasil está na América do Sul."},
-      {subject:"Física",question:"Qual unidade mede força no Sistema Internacional?",options:["Metro","Newton","Litro"],answer:1,explanation:"A força é medida em newtons (N)."},
-      {subject:"Educação financeira",question:"Qual atitude ajuda a organizar o orçamento?",options:["Anotar receitas e despesas","Ignorar os gastos","Gastar tudo ao receber"],answer:0,explanation:"Registrar receitas e despesas ajuda a acompanhar o orçamento."}
-    ];
-    let current=0,answered=false,quizCount=0,correctCount=0;
-    function render(){answered=false;$("quizResult").classList.remove("show");const q=questions[current];$("quizQuestion").innerHTML=`<strong>${q.subject}:</strong> ${q.question}`;$("quizOptions").innerHTML="";q.options.forEach((option,i)=>{const b=document.createElement("button");b.className="quiz-option";b.textContent=option;b.onclick=()=>answer(i,b);$("quizOptions").appendChild(b)})}
-    function answer(i,b){if(answered)return;answered=true;quizCount++;const q=questions[current];if(i===q.answer){correctCount++;b.classList.add("correct");show("quizResult","Correto! "+q.explanation)}else{b.classList.add("wrong");$("quizOptions").children[q.answer].classList.add("correct");show("quizResult","Ainda não. "+q.explanation)}$("quizCount").textContent=quizCount;$("correctCount").textContent=correctCount}
-    $("newQuestionButton").onclick=()=>{current=(current+1)%questions.length;render()};render();
-    $("fractionButton").onclick=()=>{const a=+$("num1").value,b=+$("den1").value,c=+$("num2").value,d=+$("den2").value,op=$("fractionOp").value;if(!b||!d){show("fractionResult","Os denominadores não podem ser zero.");return}let n,x;if(op==="+"){n=a*d+c*b;x=b*d}else if(op==="-"){n=a*d-c*b;x=b*d}else if(op==="*"){n=a*c;x=b*d}else{if(!c){show("fractionResult","Não é possível dividir por uma fração igual a zero.");return}n=a*d;x=b*c}if(x<0){n=-n;x=-x}const g=gcd(n,x);n/=g;x/=g;show("fractionResult",`Resultado: ${n}/${x} = ${(n/x).toLocaleString("pt-BR",{maximumFractionDigits:6})}`)};
-    $("sqrtButton").onclick=()=>{const v=+$("sqrtValue").value;if($("sqrtValue").value===""||v<0){show("sqrtResult","Digite um número igual ou maior que zero.");return}const r=Math.sqrt(v);show("sqrtResult",`√${v} = ${Number.isInteger(r)?r:r.toLocaleString("pt-BR",{maximumFractionDigits:6})}`)};
-    $("equationButton").onclick=()=>{const a=+$("coefA").value,b=+$("coefB").value,c=+$("coefC").value;if(!a){show("equationResult",b===c?"Qualquer valor de x satisfaz a equação.":"A equação não tem solução.");return}const x=(c-b)/a;show("equationResult",`ax + b = c\nx = (${c} − ${b}) ÷ ${a}\nx = ${x.toLocaleString("pt-BR",{maximumFractionDigits:6})}`)};
-    $("polynomialButton").onclick=()=>{const input=$("polynomialInput").value.replace(/\s+/g,"");if(!input){show("polynomialResult","Digite um polinômio.");return}show("polynomialResult",`Verifique a expressão na ordem: ${input}\nAgrupe termos com o mesmo grau e some seus coeficientes.`)};
-    $("interestButton").onclick=()=>{const c=+$("capital").value,r=+$("rate").value,m=+$("months").value;if($("capital").value===""||$("rate").value===""||$("months").value===""||c<0||r<0||m<0){show("interestResult","Preencha os campos com valores válidos.");return}const j=c*(r/100)*m,money=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});show("interestResult",`Juros: ${money(j)}\nTotal estimado: ${money(c+j)}`)};
-  </script>
+<div class="app">
+  <aside class="sidebar"><div class="brand">✦ Estudaê</div><nav class="nav"><button class="active" data-page="inicio">🏠 Início</button><button data-page="calculadoras">➗ Calculadoras</button><button data-page="resumos">📝 Resumos</button><button data-page="questionario">✅ Questionário</button></nav></aside>
+  <main>
+    <section id="inicio" class="page"><header class="top"><h1>Aprender fica mais leve por aqui ✨</h1><p>Calcule, revise um assunto e pratique com questionários.</p></header>
+      <div class="cards">
+        <div class="card"><h3>➕ Soma</h3><p>Adicione valores.</p><button onclick="openPage('calculadoras');document.querySelector('#calcOp').value='+'">Abrir</button></div>
+        <div class="card"><h3>➖ Subtração</h3><p>Calcule diferenças.</p><button onclick="openPage('calculadoras');document.querySelector('#calcOp').value='-'">Abrir</button></div>
+        <div class="card"><h3>✖️ Multiplicação</h3><p>Multiplique números.</p><button onclick="openPage('calculadoras');document.querySelector('#calcOp').value='*'">Abrir</button></div>
+        <div class="card"><h3>➗ Divisão</h3><p>Divida valores.</p><button onclick="openPage('calculadoras');document.querySelector('#calcOp').value='/'">Abrir</button></div>
+      </div>
+    </section>
+
+    <section id="calculadoras" class="page hidden"><header class="top"><h1>Calculadora básica</h1><p>Escolha a operação e informe os números.</p></header><div class="panel">
+      <div class="grid"><div><label for="calcA">Primeiro número</label><input id="calcA" type="number" value="0"></div><div><label for="calcB">Segundo número</label><input id="calcB" type="number" value="0"></div></div>
+      <label for="calcOp">Operação</label><select id="calcOp"><option value="+">Soma (+)</option><option value="-">Subtração (−)</option><option value="*">Multiplicação (×)</option><option value="/">Divisão (÷)</option></select>
+      <div class="actions"><button class="btn" id="calculateButton">Calcular</button><button class="btn secondary" id="clearCalcButton">Limpar</button></div><div id="calcResult" class="result hidden"></div>
+    </div></section>
+
+    <section id="resumos" class="page hidden"><header class="top"><h1>Explicação de assuntos</h1><p>Digite o assunto que deseja estudar.</p></header><div class="panel">
+      <label for="topicInput">Assunto</label><input id="topicInput" placeholder="Ex.: fotossíntese, frações, Guerra Fria, verbos">
+      <div class="actions"><button class="btn" id="summaryButton">Gerar resumo</button></div><div id="summaryResult" class="result hidden"></div>
+    </div></section>
+
+    <section id="questionario" class="page hidden"><header class="top"><h1>Questionário de 10 questões</h1><p>Responda e acompanhe o seu resultado.</p></header><div class="panel">
+      <div id="quizMeta"><strong>Questão <span id="quizNumber">1</span> de 10</strong></div><div class="progress" style="margin:10px 0"><div id="quizProgress"></div></div>
+      <h2 id="quizQuestion"></h2><div id="quizOptions"></div><div id="quizFeedback" class="result hidden"></div>
+      <div class="actions"><button class="btn hidden" id="nextQuestionButton">Próxima questão</button><button class="btn hidden" id="restartQuizButton">Refazer questionário</button></div>
+      <div id="quizFinal" class="result hidden"></div>
+    </div></section>
+  </main>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+function openPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));$(id).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));window.scrollTo(0,0)}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>openPage(b.dataset.page));
+$('calculateButton').onclick=()=>{const a=Number($('calcA').value),b=Number($('calcB').value),op=$('calcOp').value;let text,r;if(op==='+'){r=a+b;text=`${a} + ${b} = ${r}`}else if(op==='-'){r=a-b;text=`${a} − ${b} = ${r}`}else if(op==='*'){r=a*b;text=`${a} × ${b} = ${r}`}else{if(b===0){text='Não é possível dividir por zero.'}else{r=a/b;text=`${a} ÷ ${b} = ${Number.isInteger(r)?r:r.toFixed(4)}`}}$('calcResult').textContent=text;$('calcResult').classList.remove('hidden')};
+$('clearCalcButton').onclick=()=>{$('calcA').value='0';$('calcB').value='0';$('calcOp').value='+';$('calcResult').classList.add('hidden')};
+
+const summaries={
+'fotossíntese':'A fotossíntese é o processo pelo qual plantas, algas e algumas bactérias produzem energia química usando luz, água e gás carbônico. Os principais pontos são:\n• Luz solar fornece energia.\n• Clorofila absorve essa energia.\n• A planta usa água e gás carbônico.\n• São produzidos glicose e oxigênio.\n• O processo acontece principalmente nas folhas.',
+'frações':'Uma fração representa uma parte de um inteiro. Ela possui numerador e denominador.\n• Numerador: indica quantas partes foram consideradas.\n• Denominador: indica em quantas partes o inteiro foi dividido.\n• Frações equivalentes representam o mesmo valor.\n• Para somar ou subtrair, use denominadores iguais.',
+'guerra fria':'A Guerra Fria foi um conflito político, econômico e ideológico entre Estados Unidos e União Soviética após a Segunda Guerra Mundial.\n• EUA defendiam o capitalismo.\n• URSS defendia o socialismo.\n• Houve corrida armamentista e espacial.\n• O mundo ficou dividido em blocos.\n• O conflito terminou com a dissolução da URSS em 1991.',
+'verbos':'Verbos são palavras que indicam ação, estado ou fenômeno da natureza.\n• Exemplos de ação: correr, estudar, escrever.\n• Exemplos de estado: ser, estar, ficar.\n• Os verbos variam em pessoa, número, tempo e modo.\n• Podem estar no presente, pretérito ou futuro.'
+};
+$('summaryButton').onclick=()=>{const topic=$('topicInput').value.trim().toLowerCase();if(!topic){$('summaryResult').textContent='Digite um assunto para gerar o resumo.';$('summaryResult').classList.remove('hidden');return}const key=Object.keys(summaries).find(k=>topic.includes(k)||k.includes(topic));let text=key?summaries[key]:`Resumo de estudo — ${topic.charAt(0).toUpperCase()+topic.slice(1)}\n• Faça uma definição simples do assunto.\n• Identifique as principais ideias e palavras-chave.\n• Procure um exemplo que represente o tema.\n• Relacione o assunto com conceitos já conhecidos.\n• Faça uma revisão respondendo: o que é, como funciona e por que é importante?`;$('summaryResult').textContent=text;$('summaryResult').classList.remove('hidden')};
+
+const quiz=[
+{q:'Qual operação representa juntar dois valores?',o:['Subtração','Soma','Divisão'],a:1},{q:'Quanto é 7 × 8?',o:['54','56','64'],a:1},{q:'Quanto é 30 − 12?',o:['18','20','22'],a:0},{q:'Quanto é 36 ÷ 6?',o:['4','6','9'],a:1},{q:'Na fração 3/4, qual é o numerador?',o:['3','4','7'],a:0},{q:'Qual planeta é conhecido como planeta vermelho?',o:['Marte','Vênus','Saturno'],a:0},{q:'Qual gás é produzido pela fotossíntese?',o:['Oxigênio','Hélio','Nitrogênio'],a:0},{q:'Em português, “correr” é um verbo de?',o:['Ação','Estado','Conjunção'],a:0},{q:'A Guerra Fria aconteceu principalmente entre quais potências?',o:['EUA e URSS','Brasil e Argentina','China e Japão'],a:0},{q:'Qual unidade mede força no Sistema Internacional?',o:['Metro','Newton','Litro'],a:1}
+];
+let qi=0,score=0,answered=false;
+function renderQuiz(){answered=false;$('quizFeedback').classList.add('hidden');$('nextQuestionButton').classList.add('hidden');$('quizMeta').classList.remove('hidden');$('quizNumber').textContent=qi+1;$('quizProgress').style.width=((qi+1)/10*100)+'%';$('quizQuestion').textContent=quiz[qi].q;$('quizOptions').innerHTML='';quiz[qi].o.forEach((text,i)=>{const b=document.createElement('button');b.className='option';b.textContent=text;b.onclick=()=>answerQuiz(i,b);$('quizOptions').appendChild(b)})}
+function answerQuiz(i,b){if(answered)return;answered=true;const item=quiz[qi];[...$('quizOptions').children].forEach((x,n)=>{if(n===item.a)x.classList.add('correct')});if(i===item.a){score++;b.classList.add('correct');$('quizFeedback').textContent='Resposta correta!'}else{b.classList.add('wrong');$('quizFeedback').textContent='Resposta incorreta.'}$('quizFeedback').classList.remove('hidden');if(qi===9){$('quizFinal').textContent=`Resultado final: ${score} de 10 acertos.`;$('quizFinal').classList.remove('hidden');$('restartQuizButton').classList.remove('hidden');$('quizMeta').classList.add('hidden')}else $('nextQuestionButton').classList.remove('hidden')}
+$('nextQuestionButton').onclick=()=>{qi++;renderQuiz()};$('restartQuizButton').onclick=()=>{qi=0;score=0;$('quizFinal').classList.add('hidden');$('restartQuizButton').classList.add('hidden');renderQuiz()};renderQuiz();
+</script>
 </body>
 </html>
